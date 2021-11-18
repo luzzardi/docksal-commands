@@ -1,0 +1,13 @@
+#!/usr/bin/env bash
+## Ask to add any untracked file.
+##
+## Usage: fin local/git/add-untracked
+
+# Add untracked files.
+for file in $(git ls-files --others --exclude-standard --exclude=.docksal/commands/local); do
+  read -p "Add $file? [y/N]" should_add
+  if [[ "${should_add}" == "Y" ]] || [[ "${should_add}" == "y" ]];
+  then
+    git add $file
+  fi
+done;

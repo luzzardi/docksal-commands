@@ -1,0 +1,43 @@
+#!/usr/bin/env bash
+## Sync database, files, adjust permissions and local environment.
+##
+## envs: [dev|test|prod]
+## default: dev
+## Usage: fin local/sync [dev|test|prod]
+
+site_alias=""
+env=${1:-dev}
+
+if [[ -z "${site_alias}" ]]; then
+  echo "Error: site alias not set."
+  exit 1
+fi
+
+if ! [[ "${env}" =~ ^(test|dev|prod)$ ]]; then
+  echo "Usage: fin local/sync [dev|test|prod]"
+  exit 1
+fi
+
+echo "Syncing database from ${env}..."
+fin drush sql-sync @${site_alias}.${env} @self -y
+
+# Clear cache.
+fin drush cr
+
+# Import local changes.env
+fin blt du -n
+
+echo "Syncing files from ${env}..."
+fin drush rsync @${site_alias}.${env}:%files/ @self:%files -y
+
+# Change permissions of files folder.
+fin exec chmod -R 755 /var/www/docroot/sites/default/files
+
+# Disable cache module.
+fin drush pm:uninstall advagg -y
+
+# Clear cache.
+fin drush cr
+
+# Create one time login link.
+fin drush uli

@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+## Re sync configs and disable cache modules.
+##
+## Usage: fin local/cim
+
+. "./.docksal/commands/local/helpers.sh"
+
+echo_color green "Importing local changes."
+fin blt du -n
+
+echo_color green "Changing permissions of files folder."
+fin exec chmod -R 755 /var/www/docroot/sites/default/files
+
+echo_color green "Disable cache module."
+fin drush pm:uninstall advagg -y
+
+echo_color green "Clear cache."
+fin drush cr
+
+echo_color green "Create one time login link."
+fin drush uli

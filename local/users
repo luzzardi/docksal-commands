@@ -1,0 +1,40 @@
+#!/usr/bin/env bash
+## Create one user per role.
+##
+## Usage: fin local/users
+
+. "./.docksal/commands/local/helpers.sh"
+
+function create_user() {
+  role=$1
+  user="${role}.imagex"
+  email="${user}@imagexmedia.com"
+  password=$(openssl rand -base64 12)
+
+  # Avoid error if user already exists.
+  user_exists=$(fin drush uli --mail="${email}")
+  if [[ "$?" == 1 ]]; then
+     echo_color green "Creating user ${user} ..."
+    fin drush ucrt "${user}" --mail="${email}" --password="${password}"
+  fi
+
+  echo_color green "Adding role ${role} to user ${user}"
+  fin drush user-add-role "${role}" "${user}"
+
+  echo_color green "Generating one time login..."
+  fin drush uli --mail="${email}"
+}
+
+roles=$(fin drush role:list --fields=rid)
+roles=${roles// /}
+for role in ${roles}; do
+  role=$(echo ${role%:*} | sed '/^[[:space:]]*$/d')
+  if [[ "${role}" == "anonymous" ]] || [[ "${role}" == "authenticated" ]]; then
+    continue
+  fi
+  if [[ ! -z "${role}" ]]; then
+    echo_color green "Creating user for role ${role}"
+    create_user "${role}"
+  fi
+done
+

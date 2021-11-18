@@ -1,0 +1,31 @@
+#!/usr/bin/env bash
+## Export project config and clear configs before add to git.
+##
+## Usage: fin local/cex
+
+. "./.docksal/commands/local/helpers.sh"
+
+echo_color green "Export local changes."
+fin drush cex -y
+
+echo_color green "Make checkout of advagg configs."
+git ls-files 'config/default/advagg*.yml' | xargs git checkout
+
+echo_color green "Clean envs changes."
+git ls-files --others --exclude-standard | grep 'config/envs/' # List changes
+git checkout config/envs/ # Checkout staged changes.
+
+echo_color green "Remove untracked changes on envs."
+git ls-files --others --exclude-standard | grep 'config/envs/' | xargs rm # Actual remove it.
+
+warning "Checkout partial files."
+git checkout -p config/default
+
+warning "Add files to commit."
+git add -p
+
+echo_color green "Add untracked files."
+fin local/git/add-untracked
+
+echo_color green "Show git status at the end."
+git status

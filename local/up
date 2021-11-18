@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+## Up containers and services
+##
+## Usage: fin local/up
+
+# Restart containers
+fin restart
+
+fin ssh-key add id_rsa_imgx

@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+## Run the theme build command outside the container
+##
+## Usage: fin local/theme/build
+
+. "./.docksal/commands/local/helpers.sh"
+
+theme_folder=""
+
+if [[ -z "${1}" ]]; then
+  echo_color red "Error: theme path is required"
+  exit 1
+fi
+
+theme_pre_run ${theme_folder} ${1-false}
+
+echo_color green "Building theme..."
+npm run --prefix ${theme_folder} build
