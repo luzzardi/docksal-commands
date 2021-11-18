@@ -18,6 +18,9 @@ if ! [[ "${env}" =~ ^(test|dev|prod)$ ]]; then
   exit 1
 fi
 
+echo "Installing dependencies..."
+fin composer install
+
 echo "Syncing database from ${env}..."
 fin drush sql-sync @${site_alias}.${env} @self -y
 
