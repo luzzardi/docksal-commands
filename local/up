@@ -1,9 +1,16 @@
 #!/usr/bin/env bash
-## Up containers and services
+## Up containers and services and add ssh keys.
 ##
 ## Usage: fin local/up
 
 # Restart containers
 fin restart
 
-fin ssh-key add id_rsa_imgx
+echo "Adding keys to container..."
+for entry in `ls ~/.ssh`
+do
+  if [[ "$entry" != *".pub" &&  "$entry" != *".pem" && "$entry" != "config" && "$entry" != *"known_hosts"* && "$entry" != *"sites_config"* ]]; then
+    fin ssh-key add "$entry"
+  fi
+done
+
