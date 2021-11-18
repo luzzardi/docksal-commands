@@ -3,6 +3,8 @@
 ##
 ## Usage: fin local/users
 
+set -eo pipefail
+
 . "./.docksal/commands/local/helpers.sh"
 
 function create_user() {

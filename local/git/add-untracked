@@ -3,6 +3,8 @@
 ##
 ## Usage: fin local/git/add-untracked
 
+set -eo pipefail
+
 # Add untracked files.
 for file in $(git ls-files --others --exclude-standard --exclude=.docksal/commands/local); do
   read -p "Add $file? [y/N]" should_add

@@ -5,6 +5,8 @@
 ## default: dev
 ## Usage: fin local/sync [dev|test|prod]
 
+set -eo pipefail
+
 site_alias=""
 env=${1:-dev}
 

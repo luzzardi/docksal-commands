@@ -3,6 +3,8 @@
 ##
 ## Usage: fin local/up
 
+set -eo pipefail
+
 # Restart containers
 fin restart
 

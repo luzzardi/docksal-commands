@@ -3,6 +3,8 @@
 ##
 ## Usage: fin local/cex
 
+set -eo pipefail
+
 . "./.docksal/commands/local/helpers.sh"
 
 echo_color green "Export local changes."

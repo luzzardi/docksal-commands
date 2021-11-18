@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-## Run the theme build command outside the container
+## Run the theme build command outside the container.
 ##
 ## Usage: fin local/theme/build
+
+set -eo pipefail
 
 . "./.docksal/commands/local/helpers.sh"
 

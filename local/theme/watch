@@ -1,7 +1,9 @@
 #!/usr/bin/env bash
-## Run the theme watch command outside the container
+## Run the theme watch command outside the container.
 ##
 ## Usage: fin local/theme/watch
+
+set -eo pipefail
 
 . "./.docksal/commands/local/helpers.sh"
 

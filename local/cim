@@ -3,6 +3,8 @@
 ##
 ## Usage: fin local/cim
 
+set -eo pipefail
+
 . "./.docksal/commands/local/helpers.sh"
 
 echo_color green "Importing local changes."
