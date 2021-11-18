@@ -24,7 +24,7 @@ echo "Installing dependencies..."
 fin composer install
 
 echo "Syncing database from ${env}..."
-fin drush sql-sync @${site_alias}.${env} @self -y
+fin drush sql-sync --extra-dump="--no-tablespaces" --structure-tables-list="past_event_data,key_value_expire,cache,cache_filter,cache_menu,cache_page,history,sessions,watchdog,redirect_404" @${site_alias}.${env} @self -y
 
 # Clear cache.
 fin drush cr
