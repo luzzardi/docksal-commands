@@ -8,19 +8,19 @@ set -eo pipefail
 . "./.docksal/commands/local/helpers.sh"
 
 echo_color "Installing dependencies..."
-fin composer install
+time fin composer install
 
 echo_color green "Importing local changes."
-fin blt du -n
+time fin blt du -n
 
 echo_color green "Changing permissions of files folder."
-fin exec chmod -R 755 /var/www/docroot/sites/default/files
+time fin exec chmod -R 755 /var/www/docroot/sites/default/files
 
 echo_color green "Disable cache module."
-fin drush pm:uninstall advagg -y
+time fin drush pm:uninstall advagg -y
 
 echo_color green "Clear cache."
-fin drush cr
+time fin drush cr
 
 echo_color green "Create one time login link."
-fin drush uli
+time fin drush uli

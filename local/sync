@@ -21,28 +21,13 @@ if ! [[ "${env}" =~ ^(test|dev|prod)$ ]]; then
 fi
 
 echo "Installing dependencies..."
-fin composer install
+time fin composer install
 
 echo "Syncing database from ${env}..."
-fin drush sql-sync --extra-dump="--no-tablespaces" --structure-tables-list="past_event_data,key_value_expire,cache,cache_filter,cache_menu,cache_page,history,sessions,watchdog,redirect_404" @${site_alias}.${env} @self -y
+time fin drush sql-sync --extra-dump="--no-tablespaces" --structure-tables-list="past_event_data,key_value_expire,cache,cache_filter,cache_menu,cache_page,history,sessions,watchdog,redirect_404" @${site_alias}.${env} @self -y
 
 # Clear cache.
-fin drush cr
+time fin drush cr
 
-# Import local changes.env
-fin blt du -n
-
-echo "Syncing files from ${env}..."
-fin drush rsync @${site_alias}.${env}:%files/ @self:%files -y
-
-# Change permissions of files folder.
-fin exec chmod -R 755 /var/www/docroot/sites/default/files
-
-# Disable cache module.
-fin drush pm:uninstall advagg -y
-
-# Clear cache.
-fin drush cr
-
-# Create one time login link.
-fin drush uli
+# Run updates.
+fin local/cim

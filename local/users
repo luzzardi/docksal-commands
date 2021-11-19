@@ -15,12 +15,14 @@ function create_user() {
   user_exists=$(fin drush uli --mail="${email}")
   user_exists_status=${?}
   if [[ "${user_exists_status}" == 1 ]]; then
-     echo_color green "Creating user ${user} ..."
+    echo_color green "Creating user ${user} ..."
     fin drush ucrt "${user}" --mail="${email}" --password="${password}"
   fi
 
-  echo_color green "Adding role ${role} to user ${user}"
-  fin drush user-add-role "${role}" "${user}"
+  if [[ "${role}" != "authenticated" ]]; then
+    echo_color green "Adding role ${role} to user ${user}"
+    fin drush user-add-role "${role}" "${user}"
+  fi
 
   echo_color green "Generating one time login..."
   if [[ "${user_exists_status}" == 1 ]]; then
@@ -36,12 +38,12 @@ roles=${roles// /}
 for role in ${roles}; do
   role=$(echo ${role%:*} | sed '/^[[:space:]]*$/d')
   # Ignore this roles because they need to be set manually via cms.
-  if [[ "${role}" == "anonymous" ]] || [[ "${role}" == "authenticated" ]]; then
+  if [[ "${role}" == "anonymous" ]]; then
     continue
   fi
   if [[ ! -z "${role}" ]]; then
     echo_color green "Creating user for role ${role}"
-    create_user "${role}"
+    time create_user "${role}"
   fi
 done
 

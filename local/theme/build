@@ -14,7 +14,7 @@ if [[ -z "${1}" ]]; then
   exit 1
 fi
 
-theme_pre_run ${theme_folder} ${1-false}
+time theme_pre_run ${theme_folder} ${1-false}
 
 echo_color green "Building theme..."
-npm run --prefix ${theme_folder} build
+time npm run --prefix ${theme_folder} build
