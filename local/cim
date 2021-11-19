@@ -7,6 +7,9 @@ set -eo pipefail
 
 . "./.docksal/commands/local/helpers.sh"
 
+echo_color "Installing dependencies..."
+fin composer install
+
 echo_color green "Importing local changes."
 fin blt du -n
 
