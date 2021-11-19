@@ -3,8 +3,6 @@
 ##
 ## Usage: fin local/users
 
-set -eo pipefail
-
 . "./.docksal/commands/local/helpers.sh"
 
 function create_user() {
@@ -15,7 +13,8 @@ function create_user() {
 
   # Avoid error if user already exists.
   user_exists=$(fin drush uli --mail="${email}")
-  if [[ "$?" == 1 ]]; then
+  user_exists_status=${?}
+  if [[ "${user_exists_status}" == 1 ]]; then
      echo_color green "Creating user ${user} ..."
     fin drush ucrt "${user}" --mail="${email}" --password="${password}"
   fi
@@ -24,13 +23,19 @@ function create_user() {
   fin drush user-add-role "${role}" "${user}"
 
   echo_color green "Generating one time login..."
-  fin drush uli --mail="${email}"
+  if [[ "${user_exists_status}" == 1 ]]; then
+    fin drush uli --mail="${email}"
+  else
+    echo ${user_exists}
+  fi
+
 }
 
 roles=$(fin drush role:list --fields=rid)
 roles=${roles// /}
 for role in ${roles}; do
   role=$(echo ${role%:*} | sed '/^[[:space:]]*$/d')
+  # Ignore this roles because they need to be set manually via cms.
   if [[ "${role}" == "anonymous" ]] || [[ "${role}" == "authenticated" ]]; then
     continue
   fi
